@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex,nofollow" />
+    <meta name="referrer" content="no-referrer" />
+    <title>個人飲食紀錄</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Daily Food Log</p>
+          <h1>個人飲食紀錄</h1>
+        </div>
+        <div class="date-control" aria-label="選擇紀錄日期">
+          <button class="icon-button" id="prevDayButton" type="button" aria-label="前一天">‹</button>
+          <input id="selectedDate" type="date" />
+          <button class="icon-button" id="nextDayButton" type="button" aria-label="後一天">›</button>
+        </div>
+      </header>
+
+      <section class="summary-grid" aria-label="每日總覽">
+        <article class="summary-panel primary-summary">
+          <div>
+            <p>今日熱量</p>
+            <strong id="totalCalories">0</strong>
+          </div>
+          <span>kcal</span>
+        </article>
+        <article class="summary-panel">
+          <p>每日目標</p>
+          <label class="goal-input">
+            <input id="dailyGoal" type="number" min="0" step="50" inputmode="numeric" />
+            <span>kcal</span>
+          </label>
+        </article>
+        <article class="summary-panel">
+          <p id="remainingLabel">剩餘熱量</p>
+          <strong id="remainingCalories">0 kcal</strong>
+          <div class="progress-track" aria-hidden="true">
+            <div id="goalProgress" class="progress-fill"></div>
+          </div>
+        </article>
+        <article class="summary-panel nutrition-summary">
+          <p>三大營養素</p>
+          <div class="macro-grid">
+            <span><strong id="totalProtein">0g</strong>蛋白質</span>
+            <span><strong id="totalCarbs">0g</strong>碳水</span>
+            <span><strong id="totalFat">0g</strong>脂肪</span>
+          </div>
+        </article>
+      </section>
+
+      <section class="trend-panel" aria-label="近 7 日熱量趨勢">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">7-Day Trend</p>
+            <h2>近 7 日熱量趨勢</h2>
+          </div>
+          <div class="trend-stats">
+            <span>平均 <strong id="trendAverage">0 kcal</strong></span>
+            <span>最高 <strong id="trendPeak">0 kcal</strong></span>
+          </div>
+        </div>
+        <div id="trendChart" class="trend-chart"></div>
+        <p id="trendEmptyState" class="trend-empty hidden">近 7 日還沒有紀錄，新增幾筆後這裡會開始顯示趨勢。</p>
+      </section>
+
+      <section class="sync-panel" aria-label="Google Sheet 同步設定">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">Google Sheet Sync</p>
+            <h2>同步設定</h2>
+          </div>
+          <span id="syncStatusBadge" class="sync-badge">本機模式</span>
+        </div>
+        <div class="sync-controls">
+          <label>
+            Apps Script Web App URL
+            <input id="scriptUrlInput" type="url" placeholder="貼上 Google Apps Script Web App URL" />
+          </label>
+          <label>
+            同步密鑰（選填）
+            <input id="syncSecretInput" type="password" autocomplete="off" placeholder="與 Apps Script Properties 相同的密鑰" />
+          </label>
+          <div class="sync-actions">
+            <button id="saveSyncSettingsButton" class="ghost-button" type="button">儲存設定</button>
+            <button id="testSyncButton" class="ghost-button" type="button">測試連線</button>
+            <button id="syncFromSheetButton" class="ghost-button" type="button">從 Google Sheet 同步</button>
+          </div>
+        </div>
+        <p id="syncStatusText" class="sync-status">尚未設定 Google Sheet，同步功能會先使用本機儲存。</p>
+      </section>
+
+      <section class="workspace">
+        <form id="entryForm" class="entry-form">
+          <div class="form-heading">
+            <h2 id="formTitle">新增飲食紀錄</h2>
+            <button id="cancelEditButton" class="ghost-button hidden" type="button">取消編輯</button>
+          </div>
+
+          <label>
+            餐別
+            <select id="mealType" required>
+              <option value="breakfast">早餐</option>
+              <option value="lunch">午餐</option>
+              <option value="dinner">晚餐</option>
+              <option value="snack">點心/宵夜</option>
+            </select>
+          </label>
+
+          <label>
+            食物名稱
+            <input id="foodName" type="text" placeholder="例如：雞胸便當、拿鐵、香蕉" required />
+          </label>
+
+          <label>
+            套用常吃食物
+            <select id="favoriteSelect">
+              <option value="">選擇已儲存的食物</option>
+            </select>
+          </label>
+
+          <div class="form-row">
+            <label>
+              熱量
+              <input id="calories" type="number" min="0" step="1" inputmode="numeric" placeholder="kcal" required />
+            </label>
+            <label>
+              份量
+              <input id="quantity" type="text" placeholder="例如：1 份、半碗" />
+            </label>
+          </div>
+
+          <div class="form-row three-columns">
+            <label>
+              蛋白質
+              <input id="protein" type="number" min="0" step="0.1" inputmode="decimal" placeholder="g" />
+            </label>
+            <label>
+              碳水
+              <input id="carbs" type="number" min="0" step="0.1" inputmode="decimal" placeholder="g" />
+            </label>
+            <label>
+              脂肪
+              <input id="fat" type="number" min="0" step="0.1" inputmode="decimal" placeholder="g" />
+            </label>
+          </div>
+
+          <label>
+            備註
+            <textarea id="notes" rows="3" placeholder="口味、飽足感、外食店家等"></textarea>
+          </label>
+
+          <label class="checkbox-row">
+            <input id="saveFavorite" type="checkbox" />
+            <span>儲存為常吃食物</span>
+          </label>
+
+          <button class="primary-button" type="submit">儲存紀錄</button>
+
+          <section class="favorites-panel" aria-label="常吃食物庫">
+            <div class="compact-heading">
+              <h3>常吃食物</h3>
+              <span id="favoriteCount">0 項</span>
+            </div>
+            <div id="favoriteList" class="favorite-list"></div>
+          </section>
+        </form>
+
+        <section class="log-panel">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">Selected Day</p>
+              <h2 id="logTitle">今日紀錄</h2>
+            </div>
+            <div class="log-tools">
+              <button id="exportCsvButton" class="ghost-button" type="button">匯出 CSV</button>
+              <label class="search-box">
+                <span>搜尋</span>
+                <input id="searchInput" type="search" placeholder="輸入食物名稱" />
+              </label>
+            </div>
+          </div>
+          <p id="exportStatus" class="export-status" aria-live="polite"></p>
+
+          <div id="mealGroups" class="meal-groups"></div>
+          <div id="emptyState" class="empty-state hidden">
+            <strong>這天還沒有紀錄</strong>
+            <p>從左側新增第一筆餐點，日常追蹤就會慢慢長出節奏。</p>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <template id="entryTemplate">
+      <article class="entry-card">
+        <div>
+          <h3></h3>
+          <p class="entry-meta"></p>
+          <p class="entry-nutrition"></p>
+          <p class="entry-notes"></p>
+        </div>
+        <div class="entry-actions">
+          <strong></strong>
+          <div>
+            <button class="text-button edit-button" type="button">編輯</button>
+            <button class="text-button danger-button delete-button" type="button">刪除</button>
+          </div>
+        </div>
+      </article>
+    </template>
+
+    <script src="./app.js" type="module"></script>
+  </body>
+</html>
