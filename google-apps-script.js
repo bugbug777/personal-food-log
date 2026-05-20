@@ -102,10 +102,14 @@ function doPost(event) {
 }
 
 function assertAuthorized(sharedSecret) {
-  const expectedSecret = PropertiesService.getScriptProperties().getProperty(SHARED_SECRET_PROPERTY);
-  if (!expectedSecret) return;
+  const expectedSecret = String(PropertiesService.getScriptProperties().getProperty(SHARED_SECRET_PROPERTY) || "").trim();
+  const receivedSecret = String(sharedSecret || "").trim();
 
-  if (String(sharedSecret || "") !== expectedSecret) {
+  if (!expectedSecret) {
+    throw new Error("Server missing FOOD_LOG_SHARED_SECRET");
+  }
+
+  if (!receivedSecret || receivedSecret !== expectedSecret) {
     throw new Error("Unauthorized");
   }
 }

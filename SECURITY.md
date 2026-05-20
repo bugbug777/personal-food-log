@@ -12,13 +12,13 @@
 
 ## 同步密鑰
 
-Apps Script 支援可選的 `FOOD_LOG_SHARED_SECRET`。
+Apps Script 強制使用 `FOOD_LOG_SHARED_SECRET`。
 
 設定後：
 
 - 前端 GET 會以 query string 帶上 `sharedSecret`。
 - 前端 POST 會在 JSON body 帶上 `sharedSecret`。
-- Apps Script 會拒絕密鑰不相符的請求。
+- Apps Script 會拒絕沒有密鑰、密鑰不相符，或伺服器端未設定 `FOOD_LOG_SHARED_SECRET` 的請求。
 
 限制：
 

@@ -9,7 +9,7 @@
 - App 沒有登入系統，不適合公開給多人共用。
 - 飲食資料會存在使用者瀏覽器的 `localStorage`，同一台裝置上的瀏覽器使用者可能看得到。
 - Google Apps Script 若部署為 `Anyone with the link`，取得 Web App URL 的人可嘗試讀寫資料。
-- 已加入可選同步密鑰；建議部署時設定 `FOOD_LOG_SHARED_SECRET`，降低 URL 外流風險。
+- 已強制同步密鑰；部署時必須設定 `FOOD_LOG_SHARED_SECRET`，降低 URL 外流風險。
 
 ## 2. 建議部署設定
 
@@ -127,7 +127,7 @@ Who has access: Anyone with the link
 
 1. 開啟線上版 `index.html`。
 2. 在「同步設定」貼上 Apps Script Web App URL。
-3. 若 Apps Script 已設定 `FOOD_LOG_SHARED_SECRET`，在「同步密鑰」輸入同一組密鑰。
+3. 在「同步密鑰」輸入與 Apps Script `FOOD_LOG_SHARED_SECRET` 相同的密鑰。
 4. 按「儲存設定」。
 5. 按「測試連線」確認成功。
 6. 先新增一筆測試紀錄，確認 Google Sheet 有寫入。
@@ -155,7 +155,7 @@ http://localhost:4173/index.html
 - CSV 可以匯出。
 - 未設定同步 URL 時可純本機使用。
 - 設定同步 URL 與密鑰後可測試連線。
-- 同步密鑰錯誤時，畫面會顯示連線或同步失敗。
+- 未輸入同步密鑰或同步密鑰錯誤時，畫面會顯示連線或同步失敗。
 
 ## 5. 備份與復原
 

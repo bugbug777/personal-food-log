@@ -183,7 +183,7 @@ URL 必須是正式部署 URL，通常以 `/exec` 結尾。
 
 若使用 `/dev`，App 會提示改用 `/exec`。
 
-同步設定可選填「同步密鑰」。若 Apps Script 專案設定了 `FOOD_LOG_SHARED_SECRET` Script Property，前端必須輸入相同密鑰才可讀寫 Google Sheet。若 Apps Script 沒設定此屬性，則維持原本只靠 Web App URL 的連線模式。
+同步設定必須填寫「同步密鑰」。Apps Script 專案必須設定 `FOOD_LOG_SHARED_SECRET` Script Property，前端必須輸入相同密鑰才可讀寫 Google Sheet。若 Apps Script 沒設定此屬性，或前端沒有輸入密鑰，請求會被拒絕。
 
 ### 4.3 Apps Script Web App 部署要求
 
@@ -191,7 +191,7 @@ URL 必須是正式部署 URL，通常以 `/exec` 結尾。
 
 - Execute as: `Me`
 - Who has access: `Anyone with the link`
-- 個人線上使用建議設定 Script Property：`FOOD_LOG_SHARED_SECRET`
+- 個人線上使用必須設定 Script Property：`FOOD_LOG_SHARED_SECRET`
 
 修改 Apps Script 後需重新部署新版本，正式 `/exec` URL 才會使用最新程式碼。
 
@@ -261,7 +261,7 @@ GET：
 ?action=listFavorites
 ```
 
-若已設定同步密鑰，GET 需附加：
+GET 需附加同步密鑰：
 
 ```text
 &sharedSecret=...
@@ -421,7 +421,7 @@ personal-food-log.sync-settings
 
 - 目前無登入或多使用者隔離。
 - Google Sheet Web App URL 由使用者手動設定。
-- 同步密鑰只是降低 Web App URL 外流風險，不是完整登入系統。
+- 同步密鑰會阻擋只有 Web App URL、但沒有密鑰的請求；它仍不是完整登入系統。
 - Google Sheet 同步以 `id` 合併，不處理複雜衝突解決。
 - 本機有、遠端沒有的資料不會在同步時自動刪除。
 - CSV 下載依賴瀏覽器支援；部分內嵌瀏覽器可能不支援實際下載落地。
@@ -459,7 +459,7 @@ python3 -m http.server 4173
 - 測試 Google Sheet 連線
 - 從 Google Sheet 同步
 - 確認 Sheet 日期資料同步後仍顯示於正確日期
-- 若設定同步密鑰，確認錯誤密鑰會被拒絕
+- 確認未輸入同步密鑰或輸入錯誤密鑰時會被拒絕
 
 ## 9. 後續候選功能
 

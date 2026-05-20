@@ -110,6 +110,14 @@ function hasSyncUrl() {
   return Boolean(syncSettings.scriptUrl && syncSettings.scriptUrl.trim());
 }
 
+function hasSyncSecret() {
+  return Boolean(syncSettings.sharedSecret && syncSettings.sharedSecret.trim());
+}
+
+function hasSyncCredentials() {
+  return hasSyncUrl() && hasSyncSecret();
+}
+
 function isTestDeploymentUrl(url = syncSettings.scriptUrl) {
   return /\/dev(?:[?#].*)?$/.test(url.trim());
 }
@@ -138,6 +146,9 @@ async function sheetGet(action) {
   if (!hasSyncUrl()) {
     throw new Error("尚未設定 Apps Script URL");
   }
+  if (!hasSyncSecret()) {
+    throw new Error("尚未輸入同步密鑰");
+  }
   const warning = getSyncUrlWarning();
   if (warning) {
     throw new Error(warning);
@@ -161,6 +172,9 @@ async function sheetGet(action) {
 async function sheetPost(action, payload) {
   if (!hasSyncUrl()) {
     return null;
+  }
+  if (!hasSyncSecret()) {
+    throw new Error("尚未輸入同步密鑰");
   }
   const warning = getSyncUrlWarning();
   if (warning) {
@@ -193,19 +207,33 @@ function setSyncStatus(message, state = "idle") {
   elements.syncStatusBadge.classList.toggle("ok", state === "ok");
   elements.syncStatusBadge.classList.toggle("warning", state === "warning");
   elements.syncStatusBadge.textContent =
-    state === "ok" ? "已同步" : state === "warning" ? "同步需注意" : hasSyncUrl() ? "已設定" : "本機模式";
+    state === "ok"
+      ? "已同步"
+      : state === "warning"
+        ? "同步需注意"
+        : hasSyncCredentials()
+          ? "已設定"
+          : hasSyncUrl()
+            ? "需密鑰"
+            : "本機模式";
 }
 
 function renderSyncSettings() {
   elements.scriptUrlInput.value = syncSettings.scriptUrl || "";
   elements.syncSecretInput.value = syncSettings.sharedSecret || "";
   const warning = getSyncUrlWarning();
-  elements.testSyncButton.disabled = !hasSyncUrl() || Boolean(warning);
-  elements.syncFromSheetButton.disabled = !hasSyncUrl() || Boolean(warning);
+  elements.testSyncButton.disabled = !hasSyncCredentials() || Boolean(warning);
+  elements.syncFromSheetButton.disabled = !hasSyncCredentials() || Boolean(warning);
   if (warning) {
     setSyncStatus(warning, "warning");
+  } else if (hasSyncUrl() && !hasSyncSecret()) {
+    setSyncStatus("已儲存 Apps Script URL。請輸入同步密鑰，否則不會連線或同步。", "warning");
   } else {
-    setSyncStatus(hasSyncUrl() ? "已儲存 Apps Script URL，可測試連線或從 Google Sheet 同步。" : "尚未設定 Google Sheet，同步功能會先使用本機儲存。");
+    setSyncStatus(
+      hasSyncCredentials()
+        ? "已儲存 Apps Script URL 與同步密鑰，可測試連線或從 Google Sheet 同步。"
+        : "尚未設定 Google Sheet，同步功能會先使用本機儲存。",
+    );
   }
 }
 
@@ -755,7 +783,10 @@ async function saveSyncSettingsFromInput() {
 }
 
 async function testSheetConnection() {
-  if (!hasSyncUrl()) return;
+  if (!hasSyncCredentials()) {
+    renderSyncSettings();
+    return;
+  }
 
   try {
     setSyncStatus("正在測試 Google Sheet 連線...");
@@ -768,7 +799,10 @@ async function testSheetConnection() {
 }
 
 async function syncFromSheet() {
-  if (!hasSyncUrl()) return;
+  if (!hasSyncCredentials()) {
+    renderSyncSettings();
+    return;
+  }
 
   try {
     setSyncStatus("正在從 Google Sheet 載入資料...");
@@ -958,7 +992,7 @@ function init() {
   elements.prevDayButton.addEventListener("click", () => shiftSelectedDate(-1));
   elements.nextDayButton.addEventListener("click", () => shiftSelectedDate(1));
   render();
-  if (hasSyncUrl()) {
+  if (hasSyncCredentials()) {
     syncFromSheet();
   }
 }
