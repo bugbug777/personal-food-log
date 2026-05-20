@@ -6,7 +6,7 @@
     <meta name="robots" content="noindex,nofollow" />
     <meta name="referrer" content="no-referrer" />
     <title>個人飲食紀錄</title>
-    <link rel="stylesheet" href="./styles.css" />
+    <link rel="stylesheet" href="./styles.css?v=20260520-form-collapse" />
   </head>
   <body>
     <main class="app-shell">
@@ -119,30 +119,44 @@
             </label>
           </div>
 
-          <div class="form-row three-columns">
-            <label>
-              蛋白質
-              <input id="protein" type="number" min="0" step="0.1" inputmode="decimal" placeholder="g" />
-            </label>
-            <label>
-              碳水
-              <input id="carbs" type="number" min="0" step="0.1" inputmode="decimal" placeholder="g" />
-            </label>
-            <label>
-              脂肪
-              <input id="fat" type="number" min="0" step="0.1" inputmode="decimal" placeholder="g" />
-            </label>
-          </div>
+          <details class="form-details nutrition-details" open>
+            <summary>
+              <span>營養素</span>
+              <span class="details-indicator" aria-hidden="true"></span>
+            </summary>
+            <div class="form-details-content form-row three-columns">
+              <label>
+                蛋白質
+                <input id="protein" type="number" min="0" step="0.1" inputmode="decimal" placeholder="g" />
+              </label>
+              <label>
+                碳水
+                <input id="carbs" type="number" min="0" step="0.1" inputmode="decimal" placeholder="g" />
+              </label>
+              <label>
+                脂肪
+                <input id="fat" type="number" min="0" step="0.1" inputmode="decimal" placeholder="g" />
+              </label>
+            </div>
+          </details>
 
-          <label>
-            備註
-            <textarea id="notes" rows="3" placeholder="口味、飽足感、外食店家等"></textarea>
-          </label>
+          <details class="form-details more-options-details" open>
+            <summary>
+              <span>更多選項</span>
+              <span class="details-indicator" aria-hidden="true"></span>
+            </summary>
+            <div class="form-details-content more-options-content">
+              <label>
+                備註
+                <textarea id="notes" rows="3" placeholder="口味、飽足感、外食店家等"></textarea>
+              </label>
 
-          <label class="checkbox-row">
-            <input id="saveFavorite" type="checkbox" />
-            <span>儲存為常吃食物</span>
-          </label>
+              <label class="checkbox-row">
+                <input id="saveFavorite" type="checkbox" />
+                <span>儲存為常吃食物</span>
+              </label>
+            </div>
+          </details>
 
           <button class="primary-button" type="submit">儲存紀錄</button>
 

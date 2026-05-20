@@ -41,6 +41,8 @@ const elements = {
   form: document.querySelector("#entryForm"),
   formTitle: document.querySelector("#formTitle"),
   cancelEditButton: document.querySelector("#cancelEditButton"),
+  nutritionDetails: document.querySelector(".nutrition-details"),
+  moreOptionsDetails: document.querySelector(".more-options-details"),
   mealType: document.querySelector("#mealType"),
   favoriteSelect: document.querySelector("#favoriteSelect"),
   favoriteList: document.querySelector("#favoriteList"),
@@ -67,6 +69,7 @@ let favorites = loadCollection(FAVORITES_KEY);
 let settings = loadSettings();
 let syncSettings = loadSyncSettings();
 let editingId = null;
+const mobileFormMedia = window.matchMedia("(max-width: 560px)");
 
 function loadCollection(key) {
   try {
@@ -674,6 +677,21 @@ function renderExportState() {
   }
 }
 
+function setFormDetailsForViewport() {
+  const shouldCollapse = mobileFormMedia.matches;
+  elements.nutritionDetails.open = !shouldCollapse;
+  elements.moreOptionsDetails.open = !shouldCollapse;
+}
+
+function setFormDetailsForEntry(entry) {
+  const hasNutrition =
+    Number(entry.protein || 0) > 0 || Number(entry.carbs || 0) > 0 || Number(entry.fat || 0) > 0;
+  const hasMoreOptions = Boolean(entry.notes);
+
+  elements.nutritionDetails.open = !mobileFormMedia.matches || hasNutrition;
+  elements.moreOptionsDetails.open = !mobileFormMedia.matches || hasMoreOptions;
+}
+
 function resetForm() {
   editingId = null;
   elements.form.reset();
@@ -681,6 +699,7 @@ function resetForm() {
   elements.favoriteSelect.value = "";
   elements.formTitle.textContent = "新增飲食紀錄";
   elements.cancelEditButton.classList.add("hidden");
+  setFormDetailsForViewport();
 }
 
 function startEdit(id) {
@@ -700,6 +719,7 @@ function startEdit(id) {
   elements.saveFavorite.checked = false;
   elements.formTitle.textContent = "編輯飲食紀錄";
   elements.cancelEditButton.classList.remove("hidden");
+  setFormDetailsForEntry(entry);
   elements.foodName.focus();
 }
 
@@ -1065,10 +1085,27 @@ function closeSettingsDialog({ restoreFocus = true } = {}) {
   }
 }
 
+function handleFormViewportChange() {
+  if (editingId) {
+    const entry = entries.find((item) => item.id === editingId);
+    if (entry) {
+      setFormDetailsForEntry(entry);
+      return;
+    }
+  }
+  setFormDetailsForViewport();
+}
+
 function init() {
   elements.selectedDate.value = toDateInputValue(new Date());
   elements.dailyGoal.value = settings.dailyGoal;
   renderSyncSettings();
+  setFormDetailsForViewport();
+  if (typeof mobileFormMedia.addEventListener === "function") {
+    mobileFormMedia.addEventListener("change", handleFormViewportChange);
+  } else if (typeof mobileFormMedia.addListener === "function") {
+    mobileFormMedia.addListener(handleFormViewportChange);
+  }
   elements.openSettingsButton.addEventListener("click", openSettingsDialog);
   elements.closeSettingsButton.addEventListener("click", () => closeSettingsDialog());
   elements.settingsDialog.addEventListener("click", (event) => {

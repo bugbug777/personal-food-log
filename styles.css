@@ -558,6 +558,28 @@ label {
   accent-color: var(--accent);
 }
 
+.form-details {
+  display: grid;
+  gap: 16px;
+}
+
+.form-details summary {
+  display: none;
+}
+
+.form-details-content {
+  display: grid;
+  gap: 12px;
+}
+
+.form-details:not([open]) .form-details-content {
+  display: none;
+}
+
+.more-options-content {
+  gap: 16px;
+}
+
 .primary-button,
 .ghost-button,
 .text-button {
@@ -878,6 +900,15 @@ button:disabled {
     padding: 16px;
   }
 
+  .entry-form {
+    gap: 14px;
+  }
+
+  .entry-form label {
+    gap: 6px;
+    font-size: 0.86rem;
+  }
+
   .settings-dialog {
     width: min(100% - 20px, 720px);
     max-height: calc(100vh - 20px);
@@ -904,6 +935,51 @@ button:disabled {
   .three-columns,
   .entry-card {
     grid-template-columns: 1fr;
+  }
+
+  .form-details {
+    gap: 10px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: rgba(255, 253, 248, 0.72);
+  }
+
+  .form-details summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    min-height: 46px;
+    padding: 0 12px;
+    color: var(--accent-dark);
+    cursor: pointer;
+    font-weight: 800;
+    list-style: none;
+  }
+
+  .form-details summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .details-indicator {
+    width: 9px;
+    height: 9px;
+    border-right: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    transform: rotate(45deg);
+    transition: transform 160ms ease;
+  }
+
+  .form-details[open] .details-indicator {
+    transform: rotate(225deg);
+  }
+
+  .form-details-content {
+    padding: 0 12px 12px;
+  }
+
+  .more-options-content {
+    gap: 14px;
   }
 
   .log-panel .panel-heading {
