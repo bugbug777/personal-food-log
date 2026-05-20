@@ -19,7 +19,9 @@
 
 body {
   margin: 0;
+  max-width: 100%;
   min-height: 100vh;
+  overflow-x: hidden;
   background:
     linear-gradient(135deg, rgba(47, 118, 104, 0.08), transparent 38%),
     var(--bg);
@@ -44,6 +46,7 @@ button {
   width: min(1180px, calc(100% - 32px));
   margin: 0 auto;
   padding: 32px 0;
+  min-width: 0;
 }
 
 .topbar,
@@ -51,6 +54,7 @@ button {
 .summary-grid {
   display: grid;
   gap: 18px;
+  min-width: 0;
 }
 
 .topbar {
@@ -91,6 +95,7 @@ h2 {
 .log-tools {
   display: flex;
   align-items: center;
+  min-width: 0;
 }
 
 .date-control {
@@ -154,6 +159,7 @@ textarea:focus {
 .sync-panel,
 .entry-form,
 .log-panel {
+  min-width: 0;
   border: 1px solid rgba(222, 216, 202, 0.9);
   border-radius: 8px;
   background: rgba(255, 253, 248, 0.88);
@@ -259,6 +265,11 @@ textarea:focus {
   grid-template-columns: 1fr auto;
   gap: 14px;
   align-items: end;
+  min-width: 0;
+}
+
+.sync-controls label {
+  min-width: 0;
 }
 
 .sync-actions {
@@ -607,17 +618,32 @@ button:disabled {
 
 .favorite-item {
   display: grid;
-  grid-template-columns: 1fr auto auto;
+  grid-template-columns: minmax(0, 1fr) 40px 40px;
   align-items: center;
   gap: 8px;
-  padding: 10px;
+  padding: 12px;
   border: 1px solid var(--line);
   border-radius: 8px;
   background: var(--surface-strong);
 }
 
-.favorite-item button {
-  white-space: nowrap;
+.icon-action-button {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius: 8px;
+  background: #eef4ef;
+  color: var(--accent-dark);
+}
+
+.icon-action-button:hover {
+  background: var(--accent-soft);
+}
+
+.icon-action-button svg {
+  display: block;
 }
 
 .favorite-name {
@@ -731,7 +757,17 @@ button:disabled {
   }
 
   .favorite-item {
-    grid-template-columns: 1fr auto;
+    grid-template-columns: minmax(0, 1fr) 44px 44px;
+    padding: 12px;
+  }
+
+  .favorite-item .icon-action-button {
+    width: 44px;
+    height: 44px;
+  }
+
+  .favorite-name strong {
+    font-size: 1.05rem;
   }
 
   .entry-actions {

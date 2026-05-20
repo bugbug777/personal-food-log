@@ -560,6 +560,43 @@ function getNutritionText(item) {
   return parts.join(" · ");
 }
 
+function createIcon(name) {
+  const svg = createSvgElement("svg", {
+    viewBox: "0 0 24 24",
+    width: "20",
+    height: "20",
+    fill: "none",
+    "aria-hidden": "true",
+    focusable: "false",
+  });
+  const iconElements = {
+    plus: [
+      ["line", { x1: "12", y1: "5", x2: "12", y2: "19" }],
+      ["line", { x1: "5", y1: "12", x2: "19", y2: "12" }],
+    ],
+    trash: [
+      ["path", { d: "M3 6h18" }],
+      ["path", { d: "M8 6V4h8v2" }],
+      ["path", { d: "M6 6l1 15h10l1-15" }],
+      ["path", { d: "M10 11v6" }],
+      ["path", { d: "M14 11v6" }],
+    ],
+  };
+
+  iconElements[name].forEach(([tagName, attributes]) => {
+    svg.appendChild(
+      createSvgElement(tagName, {
+        ...attributes,
+        stroke: "currentColor",
+        "stroke-width": "2",
+        "stroke-linecap": "round",
+        "stroke-linejoin": "round",
+      }),
+    );
+  });
+  return svg;
+}
+
 function renderFavorites() {
   const sortedFavorites = [...favorites].sort((a, b) => a.name.localeCompare(b.name, "zh-Hant-TW"));
 
@@ -592,15 +629,19 @@ function renderFavorites() {
     name.append(title, detail);
 
     const applyButton = document.createElement("button");
-    applyButton.className = "text-button";
+    applyButton.className = "icon-action-button apply-favorite-button";
     applyButton.type = "button";
-    applyButton.textContent = "套用";
+    applyButton.setAttribute("aria-label", `套用 ${favorite.name}`);
+    applyButton.title = "套用";
+    applyButton.appendChild(createIcon("plus"));
     applyButton.addEventListener("click", () => applyFavorite(favorite.id));
 
     const deleteButton = document.createElement("button");
-    deleteButton.className = "text-button danger-button";
+    deleteButton.className = "icon-action-button danger-button delete-favorite-button";
     deleteButton.type = "button";
-    deleteButton.textContent = "刪除";
+    deleteButton.setAttribute("aria-label", `刪除 ${favorite.name}`);
+    deleteButton.title = "刪除";
+    deleteButton.appendChild(createIcon("trash"));
     deleteButton.addEventListener("click", () => deleteFavorite(favorite.id));
 
     item.append(name, applyButton, deleteButton);
