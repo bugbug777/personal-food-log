@@ -15,10 +15,20 @@
           <p class="eyebrow">Daily Food Log</p>
           <h1>個人飲食紀錄</h1>
         </div>
-        <div class="date-control" aria-label="選擇紀錄日期">
-          <button class="icon-button" id="prevDayButton" type="button" aria-label="前一天">‹</button>
-          <input id="selectedDate" type="date" />
-          <button class="icon-button" id="nextDayButton" type="button" aria-label="後一天">›</button>
+        <div class="topbar-actions">
+          <div class="date-control" aria-label="選擇紀錄日期">
+            <button class="icon-button" id="prevDayButton" type="button" aria-label="前一天">‹</button>
+            <input id="selectedDate" type="date" />
+            <button class="icon-button" id="nextDayButton" type="button" aria-label="後一天">›</button>
+          </div>
+          <button id="openSettingsButton" class="settings-button" type="button" aria-label="開啟設定">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M12 8a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z"></path>
+              <path
+                d="M4.9 15.1 3.5 13l1.4-2.1 2.1-.3c.2-.5.4-.9.6-1.3L6.7 7.4 8.6 5.5l1.9.9c.4-.2.8-.4 1.3-.5L12.1 4h2.8l.3 1.9c.5.1.9.3 1.3.5l1.8-.9 2 1.9-.9 1.9c.2.4.5.8.6 1.3l2.1.3 1.4 2.1-1.4 2.1-2.1.3c-.2.5-.4.9-.6 1.3l.9 1.9-2 1.9-1.8-.9c-.4.2-.8.4-1.3.5l-.3 1.9h-2.8l-.3-1.9c-.5-.1-.9-.3-1.3-.5l-1.9.9-1.9-1.9.9-1.9c-.2-.4-.5-.8-.6-1.3l-2.1-.3Z"
+              ></path>
+            </svg>
+          </button>
         </div>
       </header>
 
@@ -67,32 +77,6 @@
         </div>
         <div id="trendChart" class="trend-chart"></div>
         <p id="trendEmptyState" class="trend-empty hidden">近 7 日還沒有紀錄，新增幾筆後這裡會開始顯示趨勢。</p>
-      </section>
-
-      <section class="sync-panel" aria-label="Google Sheet 同步設定">
-        <div class="panel-heading">
-          <div>
-            <p class="eyebrow">Google Sheet Sync</p>
-            <h2>同步設定</h2>
-          </div>
-          <span id="syncStatusBadge" class="sync-badge">本機模式</span>
-        </div>
-        <div class="sync-controls">
-          <label>
-            Apps Script Web App URL
-            <input id="scriptUrlInput" type="url" placeholder="貼上 Google Apps Script Web App URL" />
-          </label>
-          <label>
-            同步密鑰（必填）
-            <input id="syncSecretInput" type="password" autocomplete="off" required placeholder="與 Apps Script Properties 相同的密鑰" />
-          </label>
-          <div class="sync-actions">
-            <button id="saveSyncSettingsButton" class="ghost-button" type="button">儲存設定</button>
-            <button id="testSyncButton" class="ghost-button" type="button">測試連線</button>
-            <button id="syncFromSheetButton" class="ghost-button" type="button">從 Google Sheet 同步</button>
-          </div>
-        </div>
-        <p id="syncStatusText" class="sync-status">尚未設定 Google Sheet，同步功能會先使用本機儲存。</p>
       </section>
 
       <section class="workspace">
@@ -200,6 +184,49 @@
         </section>
       </section>
     </main>
+
+    <dialog id="settingsDialog" class="settings-dialog" aria-labelledby="settingsTitle">
+      <div class="settings-modal">
+        <div class="settings-modal-heading">
+          <div>
+            <p class="eyebrow">Settings</p>
+            <h2 id="settingsTitle">設定</h2>
+          </div>
+          <button id="closeSettingsButton" class="settings-close-button" type="button" aria-label="關閉設定">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M6 6l12 12"></path>
+              <path d="M18 6 6 18"></path>
+            </svg>
+          </button>
+        </div>
+
+        <section class="sync-panel settings-sync-panel" aria-label="Google Sheet 同步設定">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">Google Sheet Sync</p>
+              <h2>同步設定</h2>
+            </div>
+            <span id="syncStatusBadge" class="sync-badge">本機模式</span>
+          </div>
+          <div class="sync-controls">
+            <label>
+              Apps Script Web App URL
+              <input id="scriptUrlInput" type="url" placeholder="貼上 Google Apps Script Web App URL" />
+            </label>
+            <label>
+              同步密鑰（必填）
+              <input id="syncSecretInput" type="password" autocomplete="off" required placeholder="與 Apps Script Properties 相同的密鑰" />
+            </label>
+            <div class="sync-actions">
+              <button id="saveSyncSettingsButton" class="ghost-button" type="button">儲存設定</button>
+              <button id="testSyncButton" class="ghost-button" type="button">測試連線</button>
+              <button id="syncFromSheetButton" class="ghost-button" type="button">從 Google Sheet 同步</button>
+            </div>
+          </div>
+          <p id="syncStatusText" class="sync-status">尚未設定 Google Sheet，同步功能會先使用本機儲存。</p>
+        </section>
+      </div>
+    </dialog>
 
     <template id="entryTemplate">
       <article class="entry-card">

@@ -13,6 +13,9 @@ const mealLabels = {
 const mealOrder = ["breakfast", "lunch", "dinner", "snack"];
 
 const elements = {
+  openSettingsButton: document.querySelector("#openSettingsButton"),
+  closeSettingsButton: document.querySelector("#closeSettingsButton"),
+  settingsDialog: document.querySelector("#settingsDialog"),
   selectedDate: document.querySelector("#selectedDate"),
   prevDayButton: document.querySelector("#prevDayButton"),
   nextDayButton: document.querySelector("#nextDayButton"),
@@ -1034,10 +1037,48 @@ function handleGoalInput() {
   renderTrendChart();
 }
 
+function openSettingsDialog() {
+  renderSyncAvailability();
+  if (elements.settingsDialog.open) {
+    elements.closeSettingsButton.focus();
+    return;
+  }
+  document.body.classList.add("modal-open");
+  if (typeof elements.settingsDialog.showModal === "function") {
+    elements.settingsDialog.showModal();
+  } else {
+    elements.settingsDialog.setAttribute("open", "");
+  }
+  elements.closeSettingsButton.focus();
+}
+
+function closeSettingsDialog({ restoreFocus = true } = {}) {
+  if (elements.settingsDialog.open && typeof elements.settingsDialog.close === "function") {
+    elements.settingsDialog.close();
+  } else {
+    elements.settingsDialog.removeAttribute("open");
+    document.body.classList.remove("modal-open");
+  }
+
+  if (restoreFocus) {
+    elements.openSettingsButton.focus();
+  }
+}
+
 function init() {
   elements.selectedDate.value = toDateInputValue(new Date());
   elements.dailyGoal.value = settings.dailyGoal;
   renderSyncSettings();
+  elements.openSettingsButton.addEventListener("click", openSettingsDialog);
+  elements.closeSettingsButton.addEventListener("click", () => closeSettingsDialog());
+  elements.settingsDialog.addEventListener("click", (event) => {
+    if (event.target === elements.settingsDialog) {
+      closeSettingsDialog();
+    }
+  });
+  elements.settingsDialog.addEventListener("close", () => {
+    document.body.classList.remove("modal-open");
+  });
   elements.form.addEventListener("submit", handleSubmit);
   elements.cancelEditButton.addEventListener("click", resetForm);
   elements.dailyGoal.addEventListener("input", handleGoalInput);

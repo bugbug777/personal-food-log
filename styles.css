@@ -31,6 +31,10 @@ body {
     "Noto Sans TC", sans-serif;
 }
 
+body.modal-open {
+  overflow: hidden;
+}
+
 button,
 input,
 select,
@@ -61,6 +65,13 @@ button {
   grid-template-columns: 1fr auto;
   align-items: end;
   margin-bottom: 22px;
+}
+
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
 }
 
 .eyebrow {
@@ -115,6 +126,39 @@ h2 {
   color: var(--accent-dark);
   font-size: 1.6rem;
   line-height: 1;
+}
+
+.settings-button,
+.settings-close-button {
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 8px;
+  background: var(--accent-soft);
+  color: var(--accent-dark);
+}
+
+.settings-button {
+  flex: 0 0 44px;
+  width: 44px;
+  height: 44px;
+}
+
+.settings-button:hover,
+.settings-close-button:hover {
+  background: var(--accent-dark);
+  color: white;
+}
+
+.settings-button svg,
+.settings-close-button svg {
+  width: 21px;
+  height: 21px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 input,
@@ -236,6 +280,61 @@ textarea:focus {
 .sync-panel {
   margin-bottom: 18px;
   padding: 22px;
+}
+
+.settings-dialog {
+  width: min(720px, calc(100% - 32px));
+  max-height: min(760px, calc(100vh - 32px));
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+}
+
+.settings-dialog::backdrop {
+  background: rgba(36, 49, 44, 0.28);
+  backdrop-filter: blur(3px);
+}
+
+.settings-modal {
+  display: grid;
+  gap: 20px;
+  max-height: inherit;
+  overflow: auto;
+  padding: 22px;
+  border: 1px solid rgba(222, 216, 202, 0.95);
+  border-radius: 8px;
+  background: var(--surface);
+  box-shadow: 0 28px 80px rgba(36, 49, 44, 0.22);
+}
+
+.settings-modal-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.settings-close-button {
+  flex: 0 0 40px;
+  width: 40px;
+  height: 40px;
+}
+
+.settings-sync-panel {
+  margin-bottom: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.settings-dialog .sync-controls {
+  grid-template-columns: 1fr;
+}
+
+.settings-dialog .sync-actions {
+  justify-content: flex-start;
 }
 
 .sync-badge {
@@ -725,6 +824,15 @@ button:disabled {
     width: 100%;
   }
 
+  .topbar-actions {
+    width: 100%;
+  }
+
+  .topbar-actions .date-control {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
   .entry-form {
     position: static;
   }
@@ -765,10 +873,31 @@ button:disabled {
 
   .summary-panel,
   .trend-panel,
-  .sync-panel,
   .entry-form,
   .log-panel {
     padding: 16px;
+  }
+
+  .settings-dialog {
+    width: min(100% - 20px, 720px);
+    max-height: calc(100vh - 20px);
+  }
+
+  .settings-modal {
+    padding: 16px;
+  }
+
+  .settings-dialog .sync-panel {
+    padding: 0;
+  }
+
+  .settings-dialog .sync-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .settings-dialog .sync-actions .ghost-button {
+    min-height: 44px;
   }
 
   .form-row,
